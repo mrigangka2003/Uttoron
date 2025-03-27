@@ -1,6 +1,6 @@
 import express,{Request,Response} from 'express';
 import router from './routes';
-import { MONGODB_URI, PORT } from './constants';
+import { PORT } from './constants';
 import connectDb from './config/db';
 
 const app = express();
