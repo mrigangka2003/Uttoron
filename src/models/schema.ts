@@ -97,7 +97,15 @@ const purchaseSchema= new Schema<Ipurchase>({
 })
 
 
-const User = mongoose.model<IUser>('User', userSchema);
-const Admin = mongoose.model<IUser>('Admin', adminSchema);
-const Course = mongoose.model<Icourse>('Course', courseSchema);
-const Purchase = mongoose.model<Ipurchase>('Pucharse',purchaseSchema)
+const userModel = mongoose.model<IUser>('User', userSchema);
+const adminModel = mongoose.model<IUser>('Admin', adminSchema);
+const courseModel = mongoose.model<Icourse>('Course', courseSchema);
+const purchaseModel = mongoose.model<Ipurchase>('Pucharse',purchaseSchema)
+
+
+export {
+    userModel,
+    adminModel,
+    courseModel,
+    purchaseModel
+}
