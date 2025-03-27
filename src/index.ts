@@ -1,5 +1,7 @@
 import express,{Request,Response} from 'express';
 import router from './routes';
+import { MONGODB_URI, PORT } from './constants';
+import connectDb from './config/db';
 
 const app = express();
 
@@ -10,6 +12,8 @@ app.get("/",(req:Request,res:Response)=>{
 })
 
 
-app.listen(8000,()=>{
-    console.log("Server is running on the port 8000")
+app.listen(PORT,()=>{
+    console.log(`Server listening on http://localhost:${PORT}`) ;
 })
+
+connectDb();
