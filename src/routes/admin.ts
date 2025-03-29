@@ -4,6 +4,7 @@ import { JWT_ADMIN_SECRET } from "../constants";
 import { handleError } from "../utils/errorHandler";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { adminMiddleware, AuthRequest } from "../middlewares";
 
 const adminRouter = Router();
 
@@ -41,52 +42,58 @@ adminRouter.post("/signup", async (req: Request, res: Response) => {
 });
 
 adminRouter.post("/signin", async (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    try {
-      const user = await adminModel.findOne({ email });
-      if (!user) {
-        res.status(404).json({ message: "User does not exist" });
-        return;
-      }
-
-      const isMatch = bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        res.status(401).json({ message: "Invalid credentials" });
-        return;
-      }
-
-      const token = jwt.sign(
-        {
-          id: user._id,
-        },
-        JWT_ADMIN_SECRET
-      );
-
-      res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.json({ message: "login Successful" });
-    } catch (error) {
-      handleError(res, error);
+  const { email, password } = req.body;
+  try {
+    const user = await adminModel.findOne({ email });
+    if (!user) {
+      res.status(404).json({ message: "User does not exist" });
+      return;
     }
+
+    const isMatch = bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      JWT_ADMIN_SECRET
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({ message: "login Successful" });
+  } catch (error) {
+    handleError(res, error);
+  }
 });
 
-adminRouter.post("/create", async (req: Request, res: Response) => {
-  res.json({
-    message: "Signup Route",
-  });
-});
-adminRouter.put("/create", async (req: Request, res: Response) => {
-  res.json({
-    message: "Signup Route",
-  });
-});
-adminRouter.get("/create/bulk", async (req: Request, res: Response) => {
-  res.json({
-    message: "Signup Route",
-  });
-});
+adminRouter.post("/create",adminMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    res.json({
+      message: "Signup Route",
+    });
+  }
+);
+adminRouter.put("/create",adminMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    res.json({
+      message: "Signup Route",
+    });
+  }
+);
+adminRouter.get("/create/bulk",adminMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    res.json({
+      message: "Signup Route",
+    });
+  }
+);
 
 export default adminRouter;
