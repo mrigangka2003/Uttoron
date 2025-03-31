@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { JWT_USER_SECRET } from "../constants";
 import jwt from "jsonwebtoken";
 
+import { JWT_USER_SECRET } from "../constants";
+
 export interface AuthRequest extends Request {
-  user?: any;
+  userId?: any;
 }
 
 const userMiddleware = (
@@ -22,7 +23,7 @@ const userMiddleware = (
     }
 
     const decoded = jwt.verify(token, JWT_USER_SECRET) as { id: string };
-    req.user = decoded;
+    req.userId = decoded;
     next();
   } catch (error) {
     res.status(401).json({ message: "Unauthorized: Invalid token" });

@@ -1,9 +1,10 @@
 import { Router, Request, Response } from "express";
-import { adminModel } from "../models/schema";
-import { JWT_ADMIN_SECRET } from "../constants";
-import { handleError } from "../utils/errorHandler";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
+import { adminModel, courseModel } from "../models/schema";
+import { JWT_ADMIN_SECRET } from "../constants";
+import { handleError } from "../utils/errorHandler";
 import { adminMiddleware, AuthRequest } from "../middlewares";
 
 const adminRouter = Router();
@@ -74,25 +75,94 @@ adminRouter.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
-adminRouter.post("/create",adminMiddleware,
+adminRouter.post(
+  "/create",
+  adminMiddleware,
   async (req: AuthRequest, res: Response) => {
-    res.json({
-      message: "Signup Route",
-    });
+    const adminId = req.userId;
+
+    //will Implement the file upload by multer
+    const { title, description, imageUrl, price } = req.body;
+    try {
+      const course = await courseModel.create({
+        title,
+        description,
+        imageUrl,
+        price,
+        creatorId: adminId,
+      });
+
+      if (!course) {
+        res.status(500).json({ message: "Failed to create course" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "courese created",
+        courseId: course._id,
+      });
+    } catch (error) {
+      handleError(res, error);
+    }
   }
 );
-adminRouter.put("/create",adminMiddleware,
+
+adminRouter.put(
+  "/course/:id",
+  adminMiddleware,
   async (req: AuthRequest, res: Response) => {
-    res.json({
-      message: "Signup Route",
-    });
+    const courseId = req.params.id;
+
+    if (!courseId) {
+      res.status(400).json({ message: "Course ID is required" });
+      return;
+    }
+    const adminId = req.userId;
+    const { title, price, description, imageUrl } = req.body;
+
+    try {
+      const updatedCourse = await courseModel.findByIdAndUpdate(
+        { _id: courseId, creatorId: adminId },
+        { title, description, imageUrl, price },
+        { new: true }
+      );
+
+      if (!updatedCourse) {
+        res.status(404).json({ message: "Course not found" });
+        return;
+      }
+
+      res
+        .status(200)
+        .json({ message: "Course updated", courseId: updatedCourse._id });
+    } catch (error) {
+      handleError(res, error);
+    }
   }
 );
-adminRouter.get("/create/bulk",adminMiddleware,
+
+adminRouter.get(
+  "/course/bulk",
+  adminMiddleware,
   async (req: AuthRequest, res: Response) => {
-    res.json({
-      message: "Signup Route",
-    });
+    try {
+      const adminId = req.userId;
+      const courses = await courseModel.find({
+        creatorId: adminId,
+      });
+
+      if (!courses) {
+        res.status(400).json({ message: "Something wen wrong" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Courses",
+        courses,
+      });
+    } catch (error) {
+      handleError(res, error);
+    }
   }
 );
 

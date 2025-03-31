@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 import { userModel } from "../models/schema";
 import { handleError } from "../utils/errorHandler";
 import { JWT_USER_SECRET } from "../constants";

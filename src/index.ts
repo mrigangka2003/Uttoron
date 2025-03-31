@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
+
 import router from "./routes";
 import { PORT } from "./constants";
 import connectDb from "./config/db";
