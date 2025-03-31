@@ -2,9 +2,6 @@
 
 Uttoron is a comprehensive learning platform similar to Coursera, built with Node.js, TypeScript, and Express.
 
-## Overview ✨
-
-Uttoron allows users to access courses, track their learning progress, and provides administrators with tools to manage content and users. This repository contains the backend implementation of the platform.
 
 > **Note for Beginners**: 🔰 This repository serves as an excellent example for those new to TypeScript and Node.js. The file structure and code organization follow best practices, making it an ideal learning resource to understand how to properly structure backend applications with TypeScript and Express.
 
