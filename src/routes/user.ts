@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { userModel } from "../models/schema";
 import { handleError } from "../utils/errorHandler";
 import { JWT_USER_SECRET } from "../constants";
+import { userMiddleware } from "../middlewares";
 
 const userRouter = Router();
 
@@ -76,7 +77,7 @@ userRouter.post("/signin",async (req: Request, res: Response): Promise<void> => 
   }
 );
 
-userRouter.get("/purchases", async (req: Request, res: Response) => {
+userRouter.get("/purchases",userMiddleware, async (req: Request, res: Response) => {
   res.send("Purchase something");
 });
 
